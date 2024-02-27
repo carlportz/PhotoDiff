@@ -619,7 +619,7 @@ def main(process=True, evaluate=False, test=False):
         # evaluate dataset and save config
         dataset_path = os.path.join(base_path, "PhotoDiff.npy")
         eval_dict = eval_dataset(path=dataset_path, dataset_info=dataset_info)
-        config_path = os.path.join("./configs/", f"./{dataset_info['name']}_config.json")
+        config_path = os.path.join("./configs/", f"{dataset_info['name']}_config.json")
         with open(config_path, "w") as f:
             json.dump(eval_dict, f, sort_keys=False, indent=4, separators=(',', ': '))
         print(eval_dict)
