@@ -4,7 +4,7 @@ try:
 except ModuleNotFoundError:
     pass
 import build_geom_dataset
-from configs.datasets_config import geom_with_h
+from configs.datasets_config import get_dataset_info
 import copy
 import utils
 import argparse
@@ -130,18 +130,18 @@ parser.add_argument('--sequential', action='store_true',
                     help='Organize data by size to reduce average memory usage.')
 args = parser.parse_args()
 
-data_file = './data/geom/geom_drugs_30.npy'
+data_file = './data/PhotoDiff/PhotoDiff.npy'
 
 if args.remove_h:
     raise NotImplementedError()
 else:
-    dataset_info = geom_with_h
+    dataset_info = get_dataset_info(args.dataset, remove_h=False)
 
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 device = torch.device("cuda" if args.cuda else "cpu")
 dtype = torch.float32
 
-split_data = build_geom_dataset.load_split_data(data_file, val_proportion=0.1, test_proportion=0.1, filter_size=args.filter_molecule_size)
+split_data = build_geom_dataset.load_split_data(data_file, dataset=args.dataset, val_proportion=0.1, test_proportion=0.1, filter_size=args.filter_molecule_size)
 transform = build_geom_dataset.GeomDrugsTransform(dataset_info, args.include_charges, device, args.sequential)
 dataloaders = {}
 for key, data_list in zip(['train', 'val', 'test'], split_data):

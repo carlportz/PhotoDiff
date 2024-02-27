@@ -65,7 +65,7 @@ def extract_conformers(args):
     print("Dataset processed.")
 
 
-def load_split_data(conformation_file, val_proportion=0.1, test_proportion=0.1,
+def load_split_data(conformation_file, dataset='geom', val_proportion=0.1, test_proportion=0.1,
                     filter_size=None):
     from pathlib import Path
     path = Path(conformation_file)
@@ -97,7 +97,7 @@ def load_split_data(conformation_file, val_proportion=0.1, test_proportion=0.1,
     # np.save(os.path.join(base_path, 'geom_permutation.npy'), perm)
     # del perm
 
-    perm = np.load(os.path.join(base_path, 'geom_permutation.npy'))
+    perm = np.load(os.path.join(base_path, f'{dataset}_permutation.npy'))
     data_list = [data_list[i] for i in perm]
 
     num_mol = len(data_list)
