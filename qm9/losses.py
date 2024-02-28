@@ -22,7 +22,7 @@ def compute_loss_and_nll(args, generative_model, nodes_dist, x, h, node_mask, ed
         # 'categorical' and 'integer'.
         nll = generative_model(x, h, node_mask, edge_mask, context)
 
-        N = node_mask.squeeze(2).sum(1).long()
+        N = node_mask.squeeze(2).sum(1).long() - 1 # sub 1
         print('N:', N)
 
         log_pN = nodes_dist.log_prob(N)
