@@ -152,7 +152,7 @@ def get_dataset_info(dataset_name, remove_h):
             raise Exception('Missing config for %s without hydrogens' % dataset_name)
     elif dataset_name == 'PhotoDiff':
         if not remove_h:
-            with open('./PhotoDiff_config.json') as f:
+            with open('./config/PhotoDiff_config.json') as f:
                 PhotoDiff_with_h = json.load(f)
                 return PhotoDiff_with_h
         else:
