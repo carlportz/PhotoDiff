@@ -83,7 +83,7 @@ parser.add_argument('--sin_embedding', type=eval, default=False,
                     help='whether using or not the sin embedding')
 # <-- EGNN args
 parser.add_argument('--ode_regularization', type=float, default=1e-3)
-parser.add_argument('--dataset', type=str, default='geom',
+parser.add_argument('--dataset', type=str, default='PhotoDiff',
                     help='dataset name')
 parser.add_argument('--filter_n_atoms', type=int, default=None,
                     help='When set to an integer value, QM9 will only contain molecules of that amount of atoms')
