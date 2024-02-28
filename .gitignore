@@ -1,2 +1,4 @@
 # Dataset file:
 data/PhotoDiff/switches.msgpack
+__pycache__/
+test.ipynb

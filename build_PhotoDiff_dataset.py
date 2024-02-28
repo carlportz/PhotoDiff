@@ -544,7 +544,7 @@ def eval_dataset(dataset_path, dataset_info):
     """
     eval_dict = {'name': 'PhotoDiff',
                 'atom_encoder': dataset_info['atom_encoder'],
-                'atomic_numbers': list(dataset_info['atom_encoder'].values()),
+                'atomic_nb': list(dataset_info['atom_encoder'].values()),
                 'atom_decoder': list(dataset_info['atom_encoder'].keys()),
                 'max_n_nodes': 0,
                 'n_nodes': {},
