@@ -1,4 +1,4 @@
-import json
+import pickle
 
 qm9_with_h = {
     'name': 'qm9',
@@ -152,8 +152,8 @@ def get_dataset_info(dataset_name, remove_h):
             raise Exception('Missing config for %s without hydrogens' % dataset_name)
     elif dataset_name == 'PhotoDiff':
         if not remove_h:
-            with open('./configs/PhotoDiff_config.json') as f:
-                PhotoDiff_with_h = json.load(f)
+            with open('./configs/PhotoDiff_config.pkl', 'rb') as f:
+                PhotoDiff_with_h = pickle.load(f)
                 return PhotoDiff_with_h
         else:
             raise Exception('Missing config for %s without hydrogens' % dataset_name)

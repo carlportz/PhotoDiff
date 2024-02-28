@@ -2,7 +2,7 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 import msgpack
 import numpy as np
-import json
+import pickle
 import time
 import os
 from qm9.bond_analyze import get_bond_order
@@ -412,7 +412,7 @@ class DatasetProcessor:
         Save the dataset to disk.
 
         This method saves the dataset dictionary, geometries, and smiles to separate files on disk.
-        The dataset dictionary is saved as a JSON file, geometries are saved as a NumPy array,
+        The dataset dictionary is saved as a pickle file, geometries are saved as a NumPy array,
         and smiles are saved as a text file.
 
         Args:
@@ -421,9 +421,9 @@ class DatasetProcessor:
         Returns:
             None
         """
-        data_dict_path = os.path.join(base_path, f"./{self.dataset_info['name']}.json")
-        with open(data_dict_path, "w") as f:
-            json.dump(self.data_dict, f)
+        data_dict_path = os.path.join(base_path, f"./{self.dataset_info['name']}.pkl")
+        with open(data_dict_path, "wb") as f:
+            pickle.dump(self.data_dict, f)
         print(f"Dataset saved to {data_dict_path}.")
 
         geoms = np.array(self.data_dict['geom'])
@@ -572,10 +572,10 @@ def eval_dataset(dataset_path, dataset_info):
         if atom[0] == mol_idx:
             num_atoms += 1
         else:
-            if num_atoms in eval_dict['n_nodes']:
-                eval_dict['n_nodes'][num_atoms] += 1
+            if int(num_atoms) in eval_dict['n_nodes']:
+                eval_dict['n_nodes'][int(num_atoms)] += 1
             else:
-                eval_dict['n_nodes'][num_atoms] = 1
+                eval_dict['n_nodes'][int(num_atoms)] = 1
             num_atoms = 0
             mol_idx = atom[0]
 
@@ -619,10 +619,10 @@ def main(process=True, evaluate=False, test=False):
         # evaluate dataset and save config
         dataset_path = os.path.join(base_path, "PhotoDiff.npy")
         eval_dict = eval_dataset(dataset_path, dataset_info)
-        config_path = os.path.join("./configs/", f"{dataset_info['name']}_config.json")
-        with open(config_path, "w") as f:
-            json.dump(eval_dict, f, sort_keys=False, indent=4, separators=(',', ': '))
-        #print(eval_dict)
+        config_path = os.path.join("./configs/", f"{dataset_info['name']}_config.pkl")
+        with open(config_path, "wb") as f:
+            pickle.dump(eval_dict, f)
+        print(eval_dict)
 
     elif test:
 
@@ -637,4 +637,4 @@ def main(process=True, evaluate=False, test=False):
 
 
 if __name__ == "__main__":
-    main(process=False, evaluate=False, test=False)
+    main(process=False, evaluate=True, test=False)
