@@ -212,7 +212,7 @@ else:
 model = model.to(device)
 optim = get_optim(args, model)
 # print(model)
-print(nodes_dist)
+#print(nodes_dist)
 
 
 gradnorm_queue = utils.Queue()
