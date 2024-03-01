@@ -53,7 +53,8 @@ def reverse_tensor(x):
 
 def sample_chain(args, device, flow, n_tries, dataset_info, prop_dist=None):
     n_samples = 1
-    if args.dataset == 'qm9' or args.dataset == 'qm9_second_half' or args.dataset == 'qm9_first_half':
+    if args.dataset == 'qm9' or args.dataset == 'qm9_second_half' \
+            or args.dataset == 'qm9_first_half' or args.dataset == 'PhotoDiff':
         n_nodes = 19
     elif args.dataset == 'geom':
         n_nodes = 44
