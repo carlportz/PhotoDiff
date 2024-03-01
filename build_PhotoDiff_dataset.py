@@ -7,6 +7,7 @@ import time
 import os
 from qm9.bond_analyze import get_bond_order
 
+# this is only for building the dataset
 dataset_info = {'name': 'PhotoDiff',
                 'atom_encoder': {'H': 1, 'C': 6, 'N': 7, 'O': 8, 'F': 9, 'S': 16, 'Cl': 17},
                 'atom_decoder': {1: 'H', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 16: 'S', 17: 'Cl'},
@@ -543,7 +544,7 @@ def eval_dataset(dataset_path, dataset_info):
               the radius dictionary, and whether hydrogen atoms are included.
     """
     eval_dict = {'name': 'PhotoDiff',
-                'atom_encoder': dataset_info['atom_encoder'],
+                'atom_encoder': {atom: i for i, atom in enumerate(dataset_info['atom_encoder'])},
                 'atomic_nb': list(dataset_info['atom_encoder'].values()),
                 'atom_decoder': list(dataset_info['atom_encoder'].keys()),
                 'max_n_nodes': 0,
@@ -562,7 +563,7 @@ def eval_dataset(dataset_path, dataset_info):
     for i, atom in enumerate(atoms):
 
         # count number of different atom types
-        atom_type = atom[1]
+        atom_type = eval_dict['atomic_nb'].index(atom[1])
         if atom_type in eval_dict['atom_types']:
             eval_dict['atom_types'][atom_type] += 1
         else:
