@@ -35,11 +35,25 @@ def retrieve_dataloaders(cfg):
                                          num_workers=num_workers,
                                          collate_fn=preprocess.collate_fn)
                              for split, dataset in datasets.items()}
-    elif 'geom' in cfg.dataset:
-        import build_geom_dataset
-        from configs.datasets_config import get_dataset_info
-        data_file = './data/geom/geom_drugs_30.npy'
-        dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
+    else:
+
+        if 'geom' in cfg.dataset:
+
+            import build_geom_dataset
+            from configs.datasets_config import get_dataset_info
+            data_file = './data/geom/geom_drugs_30.npy'
+            dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
+
+        elif cfg.dataset == 'PhotoDiff':
+
+            import build_geom_dataset
+            from configs.datasets_config import get_dataset_info
+            data_file = './data/PhotoDiff/PhotoDiff.npy'
+            dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
+
+        else:
+            raise ValueError(f'Unknown dataset {cfg.dataset}')
+
 
         # Retrieve QM9 dataloaders
         split_data = build_geom_dataset.load_split_data(data_file,
@@ -63,8 +77,7 @@ def retrieve_dataloaders(cfg):
                 shuffle=shuffle)
         del split_data
         charge_scale = None
-    else:
-        raise ValueError(f'Unknown dataset {cfg.dataset}')
+    
 
     return dataloaders, charge_scale
 
