@@ -39,23 +39,20 @@ def retrieve_dataloaders(cfg):
 
         if 'geom' in cfg.dataset:
 
-            import build_geom_dataset
-            from configs.datasets_config import get_dataset_info
             data_file = './data/geom/geom_drugs_30.npy'
-            dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
             dataset = 'geom'
 
         elif cfg.dataset == 'PhotoDiff':
 
-            import build_geom_dataset
-            from configs.datasets_config import get_dataset_info
             data_file = './data/PhotoDiff/PhotoDiff.npy'
-            dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
             dataset = 'PhotoDiff'
 
         else:
             raise ValueError(f'Unknown dataset {cfg.dataset}')
 
+        import build_geom_dataset
+        from configs.datasets_config import get_dataset_info
+        dataset_info = get_dataset_info(cfg.dataset, cfg.remove_h)
 
         # Retrieve QM9 dataloaders
         split_data = build_geom_dataset.load_split_data(data_file,

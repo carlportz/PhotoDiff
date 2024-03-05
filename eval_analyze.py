@@ -170,7 +170,7 @@ def main():
         print("Install rdkit roolkit to obtain Validity, Uniqueness, Novelty")
 
     # In GEOM-Drugs the validation partition is named 'val', not 'valid'.
-    if args.dataset == 'geom':
+    if args.dataset == 'geom' or args.dataset == 'PhotoDiff':
         val_name = 'val'
         num_passes = 1
     else:
