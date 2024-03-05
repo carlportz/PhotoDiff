@@ -3,3 +3,6 @@ data/PhotoDiff/switches.msgpack
 __pycache__/
 test.ipynb
 data/geom/*
+outputs/
+wandb/
+
