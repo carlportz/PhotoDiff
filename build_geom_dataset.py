@@ -80,6 +80,9 @@ def load_split_data(conformation_file, dataset='geom', val_proportion=0.1, test_
     split_indices = np.nonzero(mol_id[:-1] - mol_id[1:])[0] + 1
     data_list = np.split(conformers, split_indices)
 
+    # Load permutations
+    perm = np.load(os.path.join(base_path, f'{dataset}_permutation.npy'))
+
     # Filter based on molecule size.
     if filter_size is not None:
         # Keep only molecules <= filter_size
@@ -87,6 +90,9 @@ def load_split_data(conformation_file, dataset='geom', val_proportion=0.1, test_
                      if molecule.shape[0] <= filter_size]
 
         assert len(data_list) > 0, 'No molecules left after filter.'
+
+        # Update permutation
+        perm = perm[perm < len(data_list)]
 
     # CAREFUL! Only for first time run:
     # perm = np.random.permutation(len(data_list)).astype('int32')
@@ -97,7 +103,6 @@ def load_split_data(conformation_file, dataset='geom', val_proportion=0.1, test_
     # np.save(os.path.join(base_path, 'geom_permutation.npy'), perm)
     # del perm
 
-    perm = np.load(os.path.join(base_path, f'{dataset}_permutation.npy'))
     data_list = [data_list[i] for i in perm]
 
     num_mol = len(data_list)
