@@ -5,4 +5,5 @@ test.ipynb
 data/geom/*
 outputs/
 wandb/
+photodiff_run*
 
