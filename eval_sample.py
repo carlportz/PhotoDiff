@@ -39,9 +39,9 @@ def save_and_sample_chain(args, eval_args, device, flow,
             join(eval_args.model_path, target_path), one_hot, charges, x,
             dataset_info, id_from, name='chain')
 
-        vis.visualize_chain_uncertainty(
-            join(eval_args.model_path, target_path), dataset_info,
-            spheres_3d=True)
+        #vis.visualize_chain_uncertainty(
+        #    join(eval_args.model_path, target_path), dataset_info,
+        #    spheres_3d=True)
 
     return one_hot, charges, x
 
@@ -139,26 +139,30 @@ def main():
 
     flow.load_state_dict(flow_state_dict)
 
+    # Sample molecules and save as xyz in /eval/molecules/
     print('Sampling handful of molecules.')
     sample_different_sizes_and_save(
         args, eval_args, device, flow, nodes_dist,
         dataset_info=dataset_info, n_samples=30)
 
+    # Sample stable molecules and save as xyz in /eval/molecules/*stable*
     print('Sampling stable molecules.')
     sample_only_stable_different_sizes_and_save(
         args, eval_args, device, flow, nodes_dist,
         dataset_info=dataset_info, n_samples=10, n_tries=2*10)
-    print('Visualizing molecules.')
-    vis.visualize(
-        join(eval_args.model_path, 'eval/molecules/'), dataset_info,
-        max_num=100, spheres_3d=True)
+    
+    # Visualize all molecules in /eval/molecules/
+    #print('Visualizing molecules.')
+    #vis.visualize(
+    #    join(eval_args.model_path, 'eval/molecules/'), dataset_info,
+    #    max_num=100, spheres_3d=True)
 
-    print('Sampling visualization chain is skipped.')
-    #print('Sampling visualization chain.')
-    #save_and_sample_chain(
-    #    args, eval_args, device, flow,
-    #    n_tries=eval_args.n_tries, n_nodes=eval_args.n_nodes,
-    #    dataset_info=dataset_info)
+    # Sample chains and save as xyz in /eval/chain_*/
+    print('Sampling visualization chain.')
+    save_and_sample_chain(
+        args, eval_args, device, flow,
+        n_tries=eval_args.n_tries, n_nodes=eval_args.n_nodes,
+        dataset_info=dataset_info)
 
 
 if __name__ == "__main__":
