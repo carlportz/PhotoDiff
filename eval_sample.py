@@ -61,37 +61,44 @@ def sample_different_sizes_and_save(args, eval_args, device, generative_model,
 
 def sample_only_stable_different_sizes_and_save(
         args, eval_args, device, flow, nodes_dist,
-        dataset_info, n_samples=10, n_tries=50):
+        dataset_info, n_samples=10, n_tries=50, n_runs=10):
+
     assert n_tries > n_samples
 
-    nodesxsample = nodes_dist.sample(n_tries)
-    one_hot, charges, x, node_mask = sample(
-        args, device, flow, dataset_info,
-        nodesxsample=nodesxsample)
+    all_counter = 0
+    for run in range(n_runs):
 
-    counter = 0
-    for i in range(n_tries):
-        num_atoms = int(node_mask[i:i+1].sum().item())
-        atom_type = one_hot[i:i+1, :num_atoms].argmax(2).squeeze(0).cpu().detach().numpy()
-        x_squeeze = x[i:i+1, :num_atoms].squeeze(0).cpu().detach().numpy()
-        mol_stable = check_stability(x_squeeze, atom_type, dataset_info)[0]
+        #nodesxsample = nodes_dist.sample(n_tries)
+        nodesxsample = torch.randint(20, 40, (n_tries,))
 
-        num_remaining_attempts = n_tries - i - 1
-        num_remaining_samples = n_samples - counter
+        one_hot, charges, x, node_mask = sample(
+            args, device, flow, dataset_info,
+            nodesxsample=nodesxsample)
 
-        if mol_stable or num_remaining_attempts <= num_remaining_samples:
-            if mol_stable:
-                print('Found stable mol.')
-            vis.save_xyz_file(
-                join(eval_args.model_path, 'eval/molecules/'),
-                one_hot[i:i+1], charges[i:i+1], x[i:i+1],
-                id_from=counter, name='molecule_stable',
-                dataset_info=dataset_info,
-                node_mask=node_mask[i:i+1])
-            counter += 1
+        counter = 0
+        for i in range(n_tries):
+            num_atoms = int(node_mask[i:i+1].sum().item())
+            atom_type = one_hot[i:i+1, :num_atoms].argmax(2).squeeze(0).cpu().detach().numpy()
+            x_squeeze = x[i:i+1, :num_atoms].squeeze(0).cpu().detach().numpy()
+            mol_stable = check_stability(x_squeeze, atom_type, dataset_info)[0]
 
-            if counter >= n_samples:
-                break
+            num_remaining_attempts = n_tries - i - 1
+            num_remaining_samples = n_samples - counter
+
+            if mol_stable or num_remaining_attempts <= num_remaining_samples:
+                if mol_stable:
+                    print('Found stable mol.')
+                vis.save_xyz_file(
+                    join(eval_args.model_path, 'eval/molecules/'),
+                    one_hot[i:i+1], charges[i:i+1], x[i:i+1],
+                    id_from=all_counter, name='molecule_stable',
+                    dataset_info=dataset_info,
+                    node_mask=node_mask[i:i+1])
+                counter += 1
+                all_counter += 1
+
+                if counter >= n_samples:
+                    break
 
 
 def main():
@@ -140,16 +147,16 @@ def main():
     flow.load_state_dict(flow_state_dict)
 
     # Sample molecules and save as xyz in /eval/molecules/
-    print('Sampling handful of molecules.')
-    sample_different_sizes_and_save(
-        args, eval_args, device, flow, nodes_dist,
-        dataset_info=dataset_info, n_samples=30)
+    #print('Sampling handful of molecules.')
+    #sample_different_sizes_and_save(
+    #    args, eval_args, device, flow, nodes_dist,
+    #    dataset_info=dataset_info, n_samples=10)
 
     # Sample stable molecules and save as xyz in /eval/molecules/*stable*
     print('Sampling stable molecules.')
     sample_only_stable_different_sizes_and_save(
         args, eval_args, device, flow, nodes_dist,
-        dataset_info=dataset_info, n_samples=10, n_tries=2*10)
+        dataset_info=dataset_info, n_samples=10, n_tries=30*10, n_runs=10)
     
     # Visualize all molecules in /eval/molecules/
     #print('Visualizing molecules.')
